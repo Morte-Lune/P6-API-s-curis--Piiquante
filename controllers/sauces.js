@@ -1,13 +1,15 @@
-////////////////
-//*CONTRÔLEUR*//        // Sauces //
-///////////////
+//////////////////
+//* CONTRÔLEUR *//        // Sauces //
+/////////////////
 
 const Sauces = require('../models/Sauce');
 
-// CREER :
+  ////////////////////////
+  // CREER UNE SAUCE // *******************************************************
+  ///////////////////////
 exports.createSauces = (req, res, next) => {
 
-    const saucesObject = JSON.parse(req.body.sauces);
+    const saucesObject = JSON.parse(req.body.sauce);
     delete saucesObject._id;
     delete saucesObject._userId;
 
@@ -17,15 +19,18 @@ exports.createSauces = (req, res, next) => {
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
     sauces.save()
-      .then(() => { res.status(201).json({message: 'Objet enregistré !'})})
+      .then(() => { res.status(201).json({message: 'Sauce enregistré !'})})
       .catch(error => { res.status(400).json({ error})}
     )
-  }; // modifySauces / Sauces
+  }; 
 
-  // MODIFIER : 
+  ////////////////////////
+  // MODIFIER UNE SAUCE // *******************************************************
+  ///////////////////////
   exports.modifySauces = (req, res, next) => {
+
     const sauceObject = req.file ? {
-        ...JSON.parse(req.body.Sauces),
+        ...JSON.parse(req.body.sauce),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
   
@@ -36,7 +41,7 @@ exports.createSauces = (req, res, next) => {
                 res.status(401).json({ message : 'Not authorized'});
             } else {
                 Sauces.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
-                .then(() => res.status(200).json({message : 'Objet modifié!'}))
+                .then(() => res.status(200).json({message : 'Sauce modifié!'}))
                 .catch(error => res.status(401).json({ error }));
             }
         })
@@ -45,24 +50,36 @@ exports.createSauces = (req, res, next) => {
         });
  };
 
-  // SUPPRIMER : 
+  ////////////////////////
+  // SUPPRIMER UNE SAUCE // *******************************************************
+  ///////////////////////
 exports.deleteSauces = (req, res, next) => {
     Sauces.deleteOne({ _id: req.params.id })
-      .then(() => res.status(200).json({ message: "Objet supprimé !" }))
+      .then(() => res.status(200).json({ message: "Sauce supprimé !" }))
       .catch((error) => res.status(400).json({ error }));
   }
 
+  ////////////////////////
+  // PRENDRE UNE SAUCE // *******************************************************
+  ///////////////////////
 exports.getOneSauces = (req, res, next) => {
     Sauces.findOne({ _id: req.params.id })
       .then((sauces) => res.status(200).json(sauces))
       .catch((error) => res.status(404).json({ error }));
   }
-  
+
+  ///////////////////////////////
+  // PRENDRE TOUTES LES SAUCES // *******************************************************
+  //////////////////////////////
 exports.getALLSauces = (req, res, next) => {
     Sauces.find()
       .then((sauces) => res.status(200).json(sauces))
       .catch((error) => res.status(400).json({ error }));
   }
+
+  ///////////////////////
+  // LIKER UNE SAUCES // *******************************************************
+  /////////////////////
 exports.likeSauces = (req, res, next) => {
     console.log('Sauce');
   }

@@ -3,7 +3,7 @@
 ///////////////////////////
 
 const express = require('express');
-//const bodyParser = require('body-parser'); 
+const bodyParser = require('body-parser'); 
 const mongoose = require('mongoose');
 const saucesRoutes = require("./routes/sauce");
 const userRoutes = require('./routes/user');// Import du router utilisateur : 
@@ -34,7 +34,7 @@ mongoose.connect('mongodb+srv://MarineG:mX4dNc2kSNlJR4Dg@clusterpiiquante.ugvvlh
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-  
+app.use(bodyParser.json()); 
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', saucesRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
