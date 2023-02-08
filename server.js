@@ -1,12 +1,11 @@
-// CREATION D'UN SERVEUR NODE AVEC EXPRESS //
+///////////////////////////////////////////////
+//* CREATION D'UN SERVEUR NODE AVEC EXPRESS *//
+//////////////////////////////////////////////
 
-/* Import du package HTTP natif de Node pour utiliser un protocolecréer un serveur*/
-// le mot-clé require permet d'importer le module http
 const http = require('http');
-// Importe le fichier app.js : 
 const app = require('./app');
+const helmet = require('helmet');
 
-/* La fonction portNormalize renvoie un port valide, qu'il soit fourni sous la forme d'un nuémro ou d'une chaîne */
 const portNormalize = valide => {
   const port = parseInt(valide, 10);
 
@@ -19,12 +18,10 @@ const portNormalize = valide => {
   return false;
 };
 
-// Variable d'environnement : 
-const port = portNormalize(process.env.PORT || '3000');
+
+const port = portNormalize(process.env.PORT);
 app.set('port', port);
 
-/*La fonction gestionnaireErreur, recherche les différentes erreurs et les gère de manière
-appropriée. Elle est ensuite enregistrée dans le serveur */
 const gestionnaireErreur = error => {
 
   if (error.syscall !== 'listen') {
@@ -48,13 +45,13 @@ const gestionnaireErreur = error => {
   }
 };
 
-// Création du serveur avec la methode "createServer" : 
+// Création du serveur avec la methode "createServer" :
 const server = http.createServer(app);
+// Protection de l'en-tête http : 
+app.use(helmet());
 
 server.on('error', gestionnaireErreur);
 
-/* un écouteur d'évènements est également enregistré, consignant le port ou le canal nommé 
-sur lequel le serveurs'exécute dans la console */
 server.on('listening', () => {
   const address = server.address();
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
@@ -62,8 +59,6 @@ server.on('listening', () => {
 });
 
 server.listen(port);
-
-
 
 
 

@@ -2,20 +2,16 @@
 //*CONTRÔLEUR*//        // Utilisateurs //
 ///////////////
 
-/* Pour rendre notre structure encore plus modulaire, 
-et simplifier la lecture et la gestion de notre code, 
-nous allons séparer la logique métier de nos routes en contrôleurs.*/
-
 const bcrypt = require("bcrypt");
-const jwt = require(('jsonwebtoken')) // Package jsonwebtoken qui vas pouvoir créer et vérifier les tokens d'authentification !!
+const jwt = require(('jsonwebtoken')); 
 const User = require('../models/User');
 
 //////////////////////////
-// * MIDDLEWARE Signup * //     pour l'enregistrement d'un nouvel utilisateur dans mongoDB:
+// * MIDDLEWARE Signup * //    
 /////////////////////////
 
 exports.signup = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10) // Appel du package bcrypt puis la fonction hash de bcrypt, qui permet de hacher le mdp ( c'est une fonction asynchrone)
+  bcrypt.hash(req.body.password, 10) 
     .then(hash => {const user = new User({
         email: req.body.email,
         password: hash
@@ -28,7 +24,7 @@ exports.signup = (req, res, next) => {
 };
 
 //////////////////////////
-// * MIDDLEWARE login * //     pour connecter des utilisateurs existants et vérifiez les info d'identification d'un utilisateur : 
+// * MIDDLEWARE login * //    
 /////////////////////////
 
 exports.login = (req, res, next) => {
@@ -37,7 +33,7 @@ exports.login = (req, res, next) => {
       if (!user) {
         return res.status(401).json({ message: "Paire identifiant/mot de passe incorrect" });
       }
-      bcrypt.compare(req.body.password, user.password)
+      bcrypt.compare(req.body.password, user.password) // regarder compare
         .then(valid => {
           if (!valid) {
             return res.status(401).json({ message: "Paire identifiant/mot de passe incorrect" });
@@ -46,7 +42,7 @@ exports.login = (req, res, next) => {
               userId: user._id,
               token: jwt.sign(
                 {userId: user._id},
-                'RANDOM_TOKEN_SECRET',
+                process.env.TOKEN,
                 {expiresIn: '24h'}
               )
             });

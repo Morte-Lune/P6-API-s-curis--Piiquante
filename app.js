@@ -6,27 +6,33 @@ const express = require('express');
 const bodyParser = require('body-parser'); 
 const mongoose = require('mongoose');
 const saucesRoutes = require("./routes/sauce");
-const userRoutes = require('./routes/user');// Import du router utilisateur : 
+const userRoutes = require('./routes/user');
 const path = require('path');
+const dotenv = require("dotenv");
+dotenv.config();
 
-const app = express(); // Appelle de la méthode Express pour créer une application Express
 
-// Utiliser pour gérer la requête POST venant du front pour extraire le corps JSON :
-app.use(express.json());
+const app = express();
 
-//********** ERREURS DE CORS **********//
-// C'est le premier middleware qui sera éxcécuté par le serveur :
-// Appliquer à toutes les requète envoyers à notre serveurs :
+
+///////////////////////
+//* ERREURS DE CORS *//
+//////////////////////
+
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', '*'); 
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
 
-//************* MONGODB ***************//
+///////////////
+//* MONGODB *//
+//////////////
+
 // Connection du serveur Node à MongoDB : 
-mongoose.connect('mongodb+srv://MarineG:mX4dNc2kSNlJR4Dg@clusterpiiquante.ugvvlh3.mongodb.net/?retryWrites=true&w=majority',
+mongoose.connect(
+  `mongodb+srv://${process.env.MD_USERNAME}:${process.env.MD_PASSWORD}@${process.env.MD_URL}`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -38,6 +44,6 @@ app.use(bodyParser.json());
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', saucesRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use(express.json());
 
-// Exporte l'application pour qu'elle soit utilisable par les autres fichiers : 
 module.exports = app;

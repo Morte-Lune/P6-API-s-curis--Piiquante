@@ -4,11 +4,11 @@
 
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth'); // Appel du middleware qui vas servir à protéger nos routes sauce en passant l'argument "auth" aux routes à protéger
+ // Middleware auth qui sécurise nos routes sauces : 
+const auth = require('../middleware/auth');
+// Package multer gestion de fichiers :
 const multer = require('../middleware/multer-config');
 const ctrlSauces = require('../controllers/sauces')
-
-//*********************************************************************//
 
 router.post('/', auth, multer, ctrlSauces.createSauces);
 router.post('/:id/like', auth, ctrlSauces.likeSauces)
